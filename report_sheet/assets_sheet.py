@@ -4,7 +4,7 @@ import logging
 # from report_sheet.assets_config import assets_dict
 
 # 资产负债表
-file_path_assets = r"D:\data\报表输入\1\资产负债表1.xlsx"
+file_path_assets = r"D:\data\报表输入\6\资产负债表6.xlsx"
 
 wb_assets = load_workbook(filename=file_path_assets)
 
@@ -24,7 +24,6 @@ def find_row(worksheet, keyword):
     """
     num = 1
     for v in range(1, 40):
-
         for i in worksheet[v]:
             if i.value != None:
                 str_value = str(i.value)
@@ -63,9 +62,9 @@ def mark(num, name):
         num += 1
 
 
-mark(0, '期末')  # 给期初余额做个标记
+mark(0, '末')  # 给期初余额做个标记
 
-mark(0, '年初')  # 给年初余额做个标记
+mark(0, '初')  # 给年初余额做个标记
 
 col_list = [chr(i) for i in range(65, 91)]
 
@@ -77,25 +76,27 @@ for i in range(len(title_list_assets)):
 for k, v in title_name_assets.items():
     if '产' in v:
         assets_col = k
-    if '期末' in v and '（资+）' in v:
+    if '末' in v and '（资+）' in v:
         assets_end = k
-    if '年初' in v and '（资+）' in v:
+    if '初' in v and '（资+）' in v:
         assets_start = k
     if '权益' in v:
         debt_col = k
-    if '期末' in v and '（资+）' not in v:
+    if '末' in v and '（资+）' not in v:
         debt_end = k
-    if '年初' in v and '（资+）' not in v:
+    if '初' in v and '（资+）' not in v:
         debt_start = k
 
-print("title_name_assets:", title_name_assets)
-
-print(assets_col,assets_end,assets_start,debt_col,debt_end,debt_start)
+# print("title_name_assets:", title_name_assets)
+#
+# print(assets_col,assets_end,assets_start,debt_col,debt_end,debt_start)
 
 
 # 循环遍历A列，找到合适的数据进行相加减
 # #############资产开始#################
 print("title_row_assets:", title_row_assets)
+
+
 def find_name_assets(keyword):
     """
     根据关键字找到相应的期末余额和年初余额
@@ -206,7 +207,11 @@ assets_dict['C19'] = C19
 assets_dict['D19'] = D19
 
 # 找到长期股权投资的期末余额和年初余额
-C20, D20 = find_name_assets('长期股权投资')
+C20_1, D20_1 = find_name_assets('长期股权投资')
+C20_2, D20_2 = find_name_assets('长期投资')
+
+C20 = C20_1 + C20_2
+D20 = D20_1 + D20_2
 
 assets_dict['C20'] = C20
 assets_dict['D20'] = D20
@@ -337,9 +342,28 @@ C22_1, D22_1 = find_name_assets('固定资产')
 C22_2, D22_2 = find_name_assets('固定资产清理')
 C22_3, D22_3 = find_name_assets('固定资产净额')
 C22_4, D22_4 = find_name_assets('固定资产账面价值')
+C22_5, D22_5 = find_name_assets('固定资产净值')
+
+# 期末余额
+if C22_3 != 0:
+    C22 = C22_3
+elif C22_3 == 0 and C22_5 != 0:
+    C22 = C22_5
+else:
+    C22 = C22_1
+
+# 年初余额
+if D22_3 != 0:
+    D22 = D22_3
+elif D22_3 == 0 and D22_5 != 0:
+    D22 = D22_5
+else:
+    D22 = D22_1
+
+
 # 最终的结果进行的相加
-C22 = C22_1 + C22_2 + C22_3 + C22_4
-D22 = D22_1 + D22_2 + D22_3 + D22_4
+# C22 = C22_1 + C22_2 + C22_3 + C22_4 + C22_5
+# D22 = D22_1 + D22_2 + D22_3 + D22_4 + D22_5
 
 assets_dict['C22'] = C22
 assets_dict['D22'] = D22
@@ -432,8 +456,13 @@ G11_1, H11_1 = find_name_debt('应交税费')
 G11_2, H11_2 = find_name_debt('应交税金')
 G11_3, H11_3 = find_name_debt('其他应交款')
 
-G11 = G11_1 + G11_2 + G11_3
-H11 = H11_1 + H11_2 + H11_3
+#  先把未交税金放到这里
+G11_4, H11_4 = find_name_debt('未交税金')
+G11_5, H11_5 = find_name_debt('其他未交款')
+
+
+G11 = G11_1 + G11_2 + G11_3 + G11_4 + G11_5
+H11 = H11_1 + H11_2 + H11_3 + H11_4 + H11_5
 
 assets_dict['G11'] = G11
 assets_dict['H11'] = H11
@@ -444,8 +473,11 @@ G12_2, H12_2 = find_name_debt('应付股利')
 G12_3, H12_3 = find_name_debt('应付利润')
 G12_4, H12_4 = find_name_debt('其他应付款')
 
-G12 = G12_1 + G12_2 + G12_3 + G12_4
-H12 = H12_1 + H12_2 + H12_3 + H12_4
+# 先把未付利润放到这里
+G12_5, H12_5 = find_name_debt('未付利润')
+
+G12 = G12_1 + G12_2 + G12_3 + G12_4 + G12_5
+H12 = H12_1 + H12_2 + H12_3 + H12_4 + H12_5
 
 assets_dict['G12'] = G12
 assets_dict['H12'] = H12
@@ -546,8 +578,18 @@ assets_dict['H26'] = H26
 
 # #####权益开始#####
 
+# 找到所有者权益的的年初和期末
+G29_1, H29_1 = find_name_debt('所有者权益')
+G29_2, H29_2 = find_name_debt('股东权益')
+
+G29 = G29_1 + G29_2
+H29 = H29_1 + H29_2
+
+assets_dict['G29'] = G29
+assets_dict['H29'] = H29
+
 # 找到实收资本（或股本）的期初余额和年初余额（多个值进行相加）
-G30_1, H30_1 = find_name_debt('实收资本（或股本）')
+G30_1, H30_1 = find_name_debt('股本')
 G30_2, H30_2 = find_name_debt('实收资本')
 
 G30 = G30_1 + G30_2
@@ -609,7 +651,7 @@ assets_dict['H38'] = H38
 print("assets_dict:", assets_dict)
 
 # 填入报表中去
-file_path_report = "D:\data\报表输出\输出财务报表.xlsx"
+file_path_report = "D:\data\报表输出\输出财务报表-打印2.xlsx"
 
 wb_report = load_workbook(filename=file_path_report)
 
@@ -622,4 +664,4 @@ ws_report = wb_report[sheet_first_report]
 for k, v in assets_dict.items():
     ws_report[k] = v
 
-wb_report.save('D:\data\报表输出\输出财务报表1.xlsx')
+wb_report.save('D:\data\报表输出\输出财务报表6.xlsx')

@@ -1,11 +1,12 @@
 from openpyxl import load_workbook
-from balance_sheet.config import DIC_KEY
+from balance_sheet.config1 import DIC_KEY
+import logging
 
 # file_path = "D:\data\输入家通.xlsx"
 
 # file_path = "D:\data\余额表2.xlsx"
 
-file_path = "D:\余额表\输入\输入16.xlsx"
+file_path = "D:\余额表\输入\输入4.xlsx"
 
 # file_path = r"D:\test_data\输入2.xlsx"
 
@@ -67,7 +68,6 @@ def get_titles(worksheet, title_num):
     :return: 标题名称的一个集合
     """
     title_names = []
-
     for i in worksheet[title_num]:
         if i.value != None:
             i.value = str(i.value)
@@ -91,8 +91,9 @@ def find_col(x):
             if i in x:
                 col = title_names.index(i)
                 return col
-    except:
-        print('没有找到相应的列数')
+    except Exception as e:
+        logging.error(e)
+        logging.error('没有找到相应的列数')
 
 
 km_col = find_col(km_names)
@@ -213,7 +214,6 @@ code_name_dic = first_km_dic()
 
 # 4.2循环科目级别的代码取出长度为第一级的长度和字典的数据进行对比，如果等于k,就把它的值赋给单元格
 
-
 def more_km():
     """
     生成多级科目
@@ -306,12 +306,9 @@ title_names = get_titles(ws, title_row)
 
 def start_end_balance(name, num, debit, credit):
     ws[dic_num[column_num + num] + str(title_row)] = name
-
     start_balance_num = title_row + 1  # 标题下一行
-
     if name not in title_names:
         taxonomy_index = title_names.index('系统分类')
-
         for i in ws[col_list[taxonomy_index]][title_row:]:
             if i.value != None:
                 i.value = str(i.value)
@@ -516,7 +513,7 @@ balance_end_index = title_out_names.index('期末余额')
 def opera_result(balance, adjust, result):
     num_balance = 1
     for i in ws_out[col_list[balance]][1:]:
-        adjust_value = ws_out[col_list[adjust] + str(num_balance + 1)].value # 调整的值
+        adjust_value = ws_out[col_list[adjust] + str(num_balance + 1)].value  # 调整的值
         balance_vlaue = i.value  # 期初（或者期末）余额的值
         if adjust_value == None or type(adjust_value) == str:
             ws_out[col_list[adjust] + str(num_balance + 1)] = 0
@@ -537,4 +534,4 @@ opera_result(balance_end_index, adjust_end_index, result_end_index)
 # wb_out.save("D:\data\输出家通.xlsx")
 
 
-wb_out.save("D:\余额表\输出\输出16.xlsx")
+wb_out.save("D:\余额表\输出\输出4.xlsx")
