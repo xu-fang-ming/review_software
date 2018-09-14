@@ -3,7 +3,7 @@ import logging
 # from report_sheet.profit_config import profit_dict
 
 # 损益表
-file_path_profit = r"D:\data\报表输入\6\利润表6.xlsx"
+file_path_profit = r"D:\data\报表\报表输入\11\利润表11.xlsx"
 
 wb_profit = load_workbook(filename=file_path_profit)
 
@@ -286,11 +286,11 @@ profit_dict['D21'] = D21
 
 
 # 找到减：所得税费用的值
-C23_1, D23_1 = find_name_profit_special('所得税费用')
+# C23_1, D23_1 = find_name_profit_special('所得税费用')
 C23_2, D23_2 = find_name_profit_special('所得税')
 
-C23 = C23_1 + C23_2
-D23 = D23_1 + D23_2
+C23 = C23_2
+D23 = D23_2
 
 profit_dict['C23'] = C23
 profit_dict['D23'] = D23
@@ -317,10 +317,10 @@ profit_dict['C26'] = C26
 profit_dict['D26'] = D26
 
 
-print("profit_dict:",profit_dict)
+print("profit_dict:", profit_dict)
 # ### 取数结束 ####
 
-file_path_report = "D:\data\报表输出\输出财务报表6.xlsx"
+file_path_report = r"D:\data\报表\报表输出\输出财务报表11.xlsx"
 
 wb_report = load_workbook(filename=file_path_report)
 
@@ -333,4 +333,4 @@ ws_report = wb_report[sheet_second_report]
 for k, v in profit_dict.items():
     ws_report[k] = v
 
-wb_report.save('D:\data\报表输出\输出财务报表6.xlsx')
+wb_report.save(r'D:\data\报表\报表输出\输出财务报表11.xlsx')

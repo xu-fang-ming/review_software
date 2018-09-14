@@ -6,7 +6,7 @@ import logging
 
 # file_path = "D:\data\余额表2.xlsx"
 
-file_path = "D:\余额表\输入\输入4.xlsx"
+file_path = r"D:\data\余额表\输入\输入17.xlsx"
 
 # file_path = r"D:\test_data\输入2.xlsx"
 
@@ -533,5 +533,21 @@ opera_result(balance_end_index, adjust_end_index, result_end_index)
 
 # wb_out.save("D:\data\输出家通.xlsx")
 
+import json
+num_dic = 1
+for i in range(1, row_num+1):
+    dic = {'科目名称': ws_out['B' + str(num_dic)].value,
+           '系统科目': ws_out['C' + str(num_dic)].value,
+           '系统分类': ws_out['D' + str(num_dic)].value,
+           '科目级次': ws_out['E' + str(num_dic)].value,
+           '方向':    ws_out['F' + str(num_dic)].value,
+           '期初余额': ws_out['G' + str(num_dic)].value,
+           '本年借方累计': ws_out['J' + str(num_dic)].value,
+           '本年贷方累计': ws_out['K' + str(num_dic)].value,
+           '期末余额': ws_out['L' + str(num_dic)].value,
+           }
+    ws_out['Z' + str(num_dic)] = json.dumps(dic)
+    # ws_out['Z' + str(num_dic)].value = dic
+    num_dic += 1
 
-wb_out.save("D:\余额表\输出\输出4.xlsx")
+wb_out.save("D:\data\余额表\输出\输出17.xlsx")

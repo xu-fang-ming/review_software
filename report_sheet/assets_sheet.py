@@ -4,7 +4,7 @@ import logging
 # from report_sheet.assets_config import assets_dict
 
 # 资产负债表
-file_path_assets = r"D:\data\报表输入\6\资产负债表6.xlsx"
+file_path_assets = r"D:\data\报表\报表输入\11\资产负债表11.xlsx"
 
 wb_assets = load_workbook(filename=file_path_assets)
 
@@ -130,7 +130,7 @@ def find_name_assets(keyword):
         logging.error(e)
 
 
-# ############负债开始################
+# ############负债和权益开始################
 def find_name_debt(keyword):
     """
     根据关键字找到相应的期末余额和年初余额
@@ -142,7 +142,7 @@ def find_name_debt(keyword):
         for i in ws_assets[debt_col]:
             val = str(i.value)
             val = val.replace(' ', '')
-            if val == keyword:
+            if keyword in val:
                 val_end = ws_assets[debt_end + str(num)].value
                 val_start = ws_assets[debt_start + str(num)].value
                 if val_end != None:
@@ -163,6 +163,38 @@ def find_name_debt(keyword):
     except Exception as e:
         logging.error(e)
 
+
+def find_name_debt_equal(keyword):
+    """
+    根据关键字找到相应的期末余额和年初余额
+    :param keyword: 关键字
+    :return: 相应的的期末余额和年初余额
+    """
+    try:
+        num = 1
+        for i in ws_assets[debt_col]:
+            val = str(i.value)
+            val = val.replace(' ', '')
+            if keyword == val:
+                val_end = ws_assets[debt_end + str(num)].value
+                val_start = ws_assets[debt_start + str(num)].value
+                if val_end != None:
+                    val_end = str(val_end)
+                    val_end = val_end.replace(',', '')
+                    C = float(val_end)
+                else:
+                    C = float(0)
+                if val_start != None:
+                    val_start = str(val_start)
+                    val_start = val_start.replace(',', '')
+                    D = float(val_start)
+                else:
+                    D = float(0)
+                return C, D
+            num += 1
+        return float(0), float(0)
+    except Exception as e:
+        logging.error(e)
 
 # ### 取数部分 ####
 
@@ -579,11 +611,12 @@ assets_dict['H26'] = H26
 # #####权益开始#####
 
 # 找到所有者权益的的年初和期末
-G29_1, H29_1 = find_name_debt('所有者权益')
-G29_2, H29_2 = find_name_debt('股东权益')
+G29_1, H29_1 = find_name_debt_equal('所有者权益')
+G29_2, H29_2 = find_name_debt_equal('股东权益')
+G29_3, H29_3 = find_name_debt_equal('所有者权益（或股东权益）：')
 
-G29 = G29_1 + G29_2
-H29 = H29_1 + H29_2
+G29 = G29_1 + G29_2 + G29_3
+H29 = H29_1 + H29_2 + H29_3
 
 assets_dict['G29'] = G29
 assets_dict['H29'] = H29
@@ -591,9 +624,12 @@ assets_dict['H29'] = H29
 # 找到实收资本（或股本）的期初余额和年初余额（多个值进行相加）
 G30_1, H30_1 = find_name_debt('股本')
 G30_2, H30_2 = find_name_debt('实收资本')
-
-G30 = G30_1 + G30_2
-H30 = H30_1 + H30_2
+if G30_1 == G30_2 and H30_1 == H30_2:
+    G30 = G30_1
+    H30 = H30_1
+else:
+    G30 = max(G30_1,G30_2)
+    H30 = max(H30_1,H30_2)
 
 assets_dict['G30'] = G30
 assets_dict['H30'] = H30
@@ -651,7 +687,7 @@ assets_dict['H38'] = H38
 print("assets_dict:", assets_dict)
 
 # 填入报表中去
-file_path_report = "D:\data\报表输出\输出财务报表-打印2.xlsx"
+file_path_report = r"D:\data\报表\报表输出\输出财务报表-打印2.xlsx"
 
 wb_report = load_workbook(filename=file_path_report)
 
@@ -664,4 +700,4 @@ ws_report = wb_report[sheet_first_report]
 for k, v in assets_dict.items():
     ws_report[k] = v
 
-wb_report.save('D:\data\报表输出\输出财务报表6.xlsx')
+wb_report.save(r'D:\data\报表\报表输出\输出财务报表11.xlsx')
