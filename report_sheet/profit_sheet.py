@@ -3,7 +3,7 @@ import logging
 # from report_sheet.profit_config import profit_dict
 
 # 损益表
-file_path_profit = r"D:\data\报表\报表输入\11\利润表11.xlsx"
+file_path_profit = r"D:\data\test\科目余额表报表\4\利润表4.xlsx"
 
 wb_profit = load_workbook(filename=file_path_profit)
 
@@ -54,6 +54,7 @@ for i in range(len(title_list_profit)):
 # 先给本年的值和上年的值定一个初始的值
 profit_this_year = "A"
 profit_last_year = "B"
+print("title_name_profit:",title_name_profit)
 for k, v in title_name_profit.items():
     if '目' in v:
         profit_col = k
@@ -320,7 +321,9 @@ profit_dict['D26'] = D26
 print("profit_dict:", profit_dict)
 # ### 取数结束 ####
 
-file_path_report = r"D:\data\报表\报表输出\输出财务报表11.xlsx"
+# file_path_report = r"D:\data\报表\报表输出\输出财务报表11.xlsx"
+
+file_path_report = r"D:\data\test\科目余额表报表\4\输出报表4.3.xlsx"
 
 wb_report = load_workbook(filename=file_path_report)
 
@@ -333,4 +336,6 @@ ws_report = wb_report[sheet_second_report]
 for k, v in profit_dict.items():
     ws_report[k] = v
 
-wb_report.save(r'D:\data\报表\报表输出\输出财务报表11.xlsx')
+# wb_report.save(r'D:\data\报表\报表输出\输出财务报表11.xlsx')
+
+wb_report.save(r"D:\data\test\科目余额表报表\4\输出报表4.3.xlsx")

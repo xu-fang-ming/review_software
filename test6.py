@@ -2,13 +2,14 @@ import docx
 from openpyxl import load_workbook
 import re
 from docx.shared import Pt
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 # 获取文档对象
 file_path_notes = r"D:\data\附注\输出正文修改.docx"
 file_notes = docx.Document(file_path_notes)
 
 # 第二次找到中间表
-file_path_mid = r"D:\data\test\科目余额表报表\4\输出中间表4.xlsx"
+file_path_mid = r"D:\data\test\科目余额表报表\8\输出中间表8.xlsx"
 wb_mid = load_workbook(filename=file_path_mid, data_only=True)
 sheets_mid = wb_mid.sheetnames
 sheet_first_mid = sheets_mid[0]  # 中间表1
@@ -33,31 +34,17 @@ def standard_num(x):
         return "0.00"
     else:
         if '.' in x:
-            if x[-3] == '.':
-                num = len(x) % 3
-                if num == 0:
-                    n = x[0:-3]
-                elif num == 1:
-                    n = "00" + x[0:-3]
-                elif num == 2:
-                    n = "0" + x[0:-3]
-                lis = re.findall(r'.{3}', n)
-                c = ','.join(lis)
+            num = len(x) % 3
+            if num == 0:
+                n = x[0:-3]
+            elif num == 1:
+                n = "00" + x[0:-3]
+            elif num == 2:
+                n = "0" + x[0:-3]
+            lis = re.findall(r'.{3}', n)
+            c = ','.join(lis)
 
-                c = c + x[-3:]
-            else:
-                x = x + "0"
-                num = len(x) % 3
-                if num == 0:
-                    n = x[0:-3]
-                elif num == 1:
-                    n = "00" + x[0:-3]
-                elif num == 2:
-                    n = "0" + x[0:-3]
-                lis = re.findall(r'.{3}', n)
-                c = ','.join(lis)
-                c = c + x[-3:]
-
+            c = c + x[-3:]
         else:
             num = len(x) % 3
             if num == 0:
@@ -70,10 +57,7 @@ def standard_num(x):
             lis = re.findall(r'.{3}', n)
             c = ','.join(lis)
             c = c + ".00"
-        d = c.lstrip("0")
-        if d.startswith("-") and d[1] == ",":
-            d = d.replace(",", "", 1)
-        return d
+        return c.lstrip("0")
 
 
 def fill_first_table_two(table_index, start_line, first_column_num,
@@ -856,11 +840,11 @@ fill_first_table_two2(65, 1, 9, 0, 10, 1, ["A1816", "A1817", "A1818", "A1819", "
                                            "C1824"])
 
 # 四十九.营业外支出
-fill_first_table_two2(66, 1, 6, 0, 7, 1, ["A1849", "A1850", "A1851", "A1852", "A1855",
-                                          "C1849", "C1850", "C1851", "C1852", "C1855", "C1856"])
+fill_first_table_two2(66, 1, 6, 0, 7, 1, ["A1867", "A1868", "A1869", "A1870", "A1873",
+                                          "C1867", "C1868", "C1869", "C1870", "C1873", "C1874"])
 
 # 五十.所得税费用
 fill_first_table_one(67, 1, 4, 1, ["C1879", "C1880", "C1882"])
 
 
-file_notes.save(r"D:\data\test\科目余额表报表\4\附注4.docx")
+file_notes.save(r"D:\data\test\科目余额表报表\8\附注8.6.docx")

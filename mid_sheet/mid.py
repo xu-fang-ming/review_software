@@ -3,14 +3,16 @@ import logging
 import json
 
 # 第一次先余额表中取数
-file_path_over = r"D:\data\余额表\输出\输出17.xlsx"
+# file_path_over = r"D:\data\余额表\输出\输出17.xlsx"
+file_path_over = r"D:\data\test\科目余额表报表\1\输出余额表1.xlsx"
 wb_over = load_workbook(filename=file_path_over)
 sheets_over = wb_over.sheetnames
 sheet_first_over = sheets_over[0]
 ws_over = wb_over[sheet_first_over]
 
 # 第二次从报表中取数
-file_path_report = r"D:\data\报表\报表输出\输出财务报表11.xlsx"
+# file_path_report = r"D:\data\报表\报表输出\输出财务报表11.xlsx"
+file_path_report = r"D:\data\test\科目余额表报表\1\输出报表1.xlsx"
 wb_report = load_workbook(filename=file_path_report)
 sheets_report = wb_report.sheetnames
 sheet_first_report = sheets_report[0]  # 资产负债表
@@ -19,7 +21,7 @@ ws_assets = wb_report[sheet_first_report]  # 资产负债表工作区
 ws_profit = wb_report[sheet_second_report]  # 利润表工作区
 
 # 第三次填入中间表中去
-file_path_mid = r"D:\data\中间表\中间附注表0905.xlsx"
+file_path_mid = r"D:\data\中间表\中间表.xlsx"
 wb_mid = load_workbook(filename=file_path_mid)
 sheets_mid = wb_mid.sheetnames
 sheet_first_mid = sheets_mid[0]  # 中间表1
@@ -64,6 +66,17 @@ def find_comp_three(subject_name, system_subject, subject_level, start_or_end):
         logging.error(e)
 
 
+def find_comp_three2(subject_name, system_subject, subject_level, start_or_end):
+    try:
+        for comp in comp_list:
+            if system_subject == comp['系统科目'] and subject_level == comp['科目级次'] and subject_name == comp['科目名称'].strip():
+                return comp[start_or_end]
+        else:
+            return float(0)
+    except Exception as e:
+        logging.error(e)
+
+
 # #######科目余额表中取数开始########
 # 1、货币资金
 F8 = find_comp('现金', 1, '期末余额')
@@ -89,11 +102,15 @@ mid_dic['F28'] = F38
 
 # 4、应收票据
 F49 = find_comp_three('银行', '应收票据', 2, '期末余额')
+if F49 == 0:
+    F49 = find_comp('应收票据', 1, '期末余额')
 F50 = find_comp_three('商业', '应收票据', 2, '期末余额')
 mid_dic['F49'] = F50
 mid_dic['F50'] = F50
 
 F53 = find_comp_three('银行', '应收票据', 2, '期初余额')
+if F53 == 0:
+    F53 = find_comp('应收票据', 1, '期初余额')
 F54 = find_comp_three('商业', '应收票据', 2, '期初余额')
 mid_dic['F53'] = F53
 mid_dic['F54'] = F54
@@ -302,8 +319,12 @@ mid_dic['F1062'] = F1062
 
 # 34、应付票据
 F1070 = find_comp_three('银行', '应付票据', 2, '期末余额')
+if F1070 == 0:
+    F1070 = find_comp('应付票据', 1, '期末余额')
 F1071 = find_comp_three('商业', '应付票据', 2, '期末余额')
 F1074 = find_comp_three('银行', '应付票据', 2, '期初余额')
+if F1074 == 0:
+    F1074 = find_comp('应付票据', 1, '期初余额')
 F1075 = find_comp_three('商业', '应付票据', 2, '期初余额')
 mid_dic['F1070'] = F1070
 mid_dic['F1071'] = F1071
@@ -324,6 +345,8 @@ mid_dic['F1108'] = F1108
 
 # 37、应付职工薪酬
 F1160 = find_comp_three('工资', '应付职工薪酬', 2, '期末余额')
+if F1160 == 0:
+    F1160 = find_comp('应付职工薪酬', 1, '期末余额')
 F1161 = find_comp('应付福利费', 1, '期末余额')
 F1166 = find_comp_three('保', '应付职工薪酬', 2, '期末余额')
 F1168 = find_comp_three('公积', '应付职工薪酬', 2, '期末余额')
@@ -357,12 +380,22 @@ mid_dic['F1198'] = F1198
 mid_dic['F1199'] = F1199
 
 # 38、应交税费
-F1255 = find_comp_three('增值', '应交税费', 2, '期末余额')
+# F1255 = find_comp_three('增值', '应交税费', 2, '期末余额')
+F1255_1 = find_comp_three2('应交增值税', '应交税费', 2, '期末余额')
+F1255_2 = find_comp_three2('未交增值税', '应交税费', 2, '期末余额')
+F1255_3 = find_comp_three2('待抵扣进项税额', '应交税费', 2, '期末余额')
+F1255_4 = find_comp_three2('增值税', '应交税费', 2, '期末余额')
+F1255 = F1255_1 + F1255_2 + F1255_3 + F1255_4
+
 F1256 = find_comp_three('消费', '应交税费', 2, '期末余额')
 F1257 = find_comp_three('营业', '应交税费', 2, '期末余额')
 F1258 = find_comp_three('资源', '应交税费', 2, '期末余额')
+
 F1259 = find_comp_three('企业所得', '应交税费', 2, '期末余额')
-F1260 = find_comp_three('城建', '应交税费', 2, '期末余额')
+if F1259 == 0:
+    F1259 = find_comp_three2('所得税', '应交税费', 2, '期末余额')
+
+F1260 = find_comp_three('城', '应交税费', 2, '期末余额')
 F1261 = find_comp_three('房产', '应交税费', 2, '期末余额')
 F1262 = find_comp_three('土地使用', '应交税费', 2, '期末余额')
 F1263 = find_comp_three('个人所得', '应交税费', 2, '期末余额')
@@ -380,12 +413,19 @@ mid_dic['F1263'] = F1263
 mid_dic['F1264'] = F1264
 mid_dic['F1265'] = F1265
 
-F1268 = find_comp_three('增值', '应交税费', 2, '期初余额')
+# F1268 = find_comp_three('增值', '应交税费', 2, '期初余额')
+F1268_1 = find_comp_three2('应交增值税', '应交税费', 2, '期末余额')
+F1268_2 = find_comp_three2('未交增值税', '应交税费', 2, '期末余额')
+F1268_3 = find_comp_three2('待抵扣进项税额', '应交税费', 2, '期末余额')
+F1268_4 = find_comp_three2('增值税', '应交税费', 2, '期末余额')
+F1268 = F1268_1 + F1268_2 + F1268_3 + F1268_4
 F1269 = find_comp_three('消费', '应交税费', 2, '期初余额')
 F1270 = find_comp_three('营业', '应交税费', 2, '期初余额')
 F1271 = find_comp_three('资源', '应交税费', 2, '期初余额')
 F1272 = find_comp_three('企业所得', '应交税费', 2, '期初余额')
-F1273 = find_comp_three('城建', '应交税费', 2, '期初余额')
+if F1272 == 0:
+    F1272 = find_comp_three2('所得税', '应交税费', 2, '期初余额')
+F1273 = find_comp_three('城', '应交税费', 2, '期初余额')
 F1274 = find_comp_three('房产', '应交税费', 2, '期初余额')
 F1275 = find_comp_three('土地使用', '应交税费', 2, '期初余额')
 F1276 = find_comp_three('个人所得', '应交税费', 2, '期初余额')
@@ -456,7 +496,8 @@ F1556 = ws_assets['G37'].value - ws_assets['H37'].value
 mid_dic['F1552'] = F1552
 mid_dic['F1555'] = F1555
 mid_dic['F1556'] = F1556
-
+# print("F1555:", F1555)
+# print("F1556:", F1556)
 # 61、营业收入和营业成本
 F1566 = find_comp('营业收入', 1, '本年借方累计')
 F1575 = find_comp('其他业务收入', 1, '本年借方累计')
@@ -465,8 +506,8 @@ mid_dic['F1566'] = F1566
 mid_dic['F1575'] = F1575
 mid_dic['F1583'] = F1583
 
-F1601 = find_comp('营业收入', 1, '本年贷方累计')
-F1610 = find_comp('其他业务收入', 1, '本年贷方累计')
+F1601 = find_comp('营业成本', 1, '本年贷方累计')
+F1610 = find_comp('其他业务成本', 1, '本年贷方累计')
 F1618 = ws_profit['D2'].value
 mid_dic['F1601'] = F1601
 mid_dic['F1610'] = F1610
@@ -477,6 +518,10 @@ F1636 = find_comp_three('消费', '税金及附加', 2, '本年贷方累计')
 F1637 = find_comp_three('营业', '税金及附加', 2, '本年贷方累计')
 F1638 = find_comp_three('城建', '税金及附加', 2, '本年贷方累计')
 F1639 = find_comp_three('教育费', '税金及附加', 2, '本年贷方累计')
+# F1639_1 = find_comp_three2('教育费附加', '税金及附加', 2, '本年贷方累计')
+# F1639_2 = find_comp_three2('地方教育费附加', '税金及附加', 2, '本年贷方累计')
+# F1639 = F1639_1 + F1639_2
+
 F1640 = find_comp_three('资源', '税金及附加', 2, '本年贷方累计')
 F1641 = find_comp_three('房产', '税金及附加', 2, '本年贷方累计')
 F1642 = find_comp_three('土地使用', '税金及附加', 2, '本年贷方累计')
@@ -786,6 +831,10 @@ def find_five(system_subject):
     for comp in comp_list:
         if comp["系统科目"] == system_subject and comp["科目级次"] == 2:
             list_km.append(comp)
+    if list_km == []:
+        for comp in comp_list:
+            if comp["系统科目"] == system_subject and comp["科目级次"] == 3:
+                list_km.append(comp)
     row_by_end = sorted(list_km, key=itemgetter("期末余额"),reverse=True)
 
     return row_by_end
@@ -804,7 +853,8 @@ def fill_in(five_km, five_name, five_end):
         for i in range(len(five_km)):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_end[i]] = five_km[i]["期末余额"]
-    elif len(five_km) > 5:
+    # elif len(five_km) > 5:
+    else:
         for i in range(5):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_end[i]] = five_km[i]["期末余额"]
@@ -826,7 +876,8 @@ def fill_in_second(five_km, five_name, five_end, five_start):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_end[i]] = five_km[i]["期末余额"]
             mid_dic_second[five_start[i]] = five_km[i]["期初余额"]
-    elif len(five_km) > 4:
+    # elif len(five_km) > 4:
+    else:
         for i in range(4):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_end[i]] = five_km[i]["期末余额"]
@@ -847,7 +898,8 @@ def fill_in_three(five_km, five_name, five_end):
         for i in range(len(five_km)):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_end[i]] = five_km[i]["期末余额"]
-    elif len(five_km) > 4:
+    # elif len(five_km) > 4:
+    else:
         for i in range(4):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_end[i]] = five_km[i]["期末余额"]
@@ -871,7 +923,8 @@ def fill_in_four(five_km, five_name, five_start, five_debit, five_credit):
             mid_dic_second[five_start[i]] = five_km[i]["期初余额"]
             mid_dic_second[five_debit[i]] = five_km[i]["本年借方累计"]
             mid_dic_second[five_credit[i]] = five_km[i]["本年贷方累计"]
-    elif len(five_km) > 4:
+    # elif len(five_km) > 4:
+    else:
         for i in range(4):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_start[i]] = five_km[i]["期初余额"]
@@ -896,7 +949,8 @@ def fill_in_five(five_km, five_name, five_start, five_other):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_start[i]] = five_km[i]["期初余额"]
             mid_dic_second[five_other[i]] = five_km[i]["本年贷方累计"]-five_km[i]["本年借方累计"]
-    elif len(five_km) > 7:
+    # elif len(five_km) > 7:
+    else:
         for i in range(7):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_start[i]] = five_km[i]["期初余额"]
@@ -917,7 +971,8 @@ def fill_in_six(five_km, five_name, five_credit):
         for i in range(len(five_km)):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_credit[i]] = five_km[i]["本年贷方累计"]
-    elif len(five_km) > 20:
+    # elif len(five_km) > 20:
+    else:
         for i in range(20):
             mid_dic_second[five_name[i]] = five_km[i]["科目名称"]
             mid_dic_second[five_credit[i]] = five_km[i]["本年贷方累计"]
@@ -925,10 +980,12 @@ def fill_in_six(five_km, five_name, five_credit):
 
 # 5.找到应收账款的前五大（只要期末）
 l1 = find_five("应收账款")
+
 fill_in(l1, ["A60", "A61", "A62", "A63", "A64"], ["B60", "B61", "B62", "B63", "B64"])
 
 # 6.预付款项的前五大
 l2 = find_five("预付款项")
+
 fill_in(l2, ["A88", "A89", "A90", "A91", "A92"], ["B88", "B89", "B90", "B91", "B92"])
 
 # 8.找到应收股利（期初和期末）
@@ -939,7 +996,18 @@ fill_in_second(l3, ["A108", "A109", "A110", "A111"], ["B108", "B109", "B110", "B
 l4 = find_five("其他应收款项")
 fill_in(l4, ["A173", "A174", "A175", "A176", "A177"], ["C173", "C174", "C175", "C176", "C177"])
 
-print("l4:",l4)
+# print("l4:",l4)
+
+# 特殊的取数（使用中间表1中的方法）
+# 13.其他流动资产
+B228 = find_comp("待摊费用", 1, "期末余额")
+C228 = find_comp("待摊费用", 1, "期初余额")
+
+mid_dic_second["B228"] = B228
+mid_dic_second["C228"] = C228
+
+#  ###
+
 # 20.在建工程（期初和期末）
 l5 = find_five("在建工程")
 fill_in_second(l5, ["A328", "A329", "A330", "A331"], ["B328", "B329", "B330", "B331"], ["E328", "E329", "E330", "E331"])
@@ -994,13 +1062,14 @@ l15 = find_five("管理费用")
 fill_in_six(l15,
             ["A786", "A787", "A788", "A789", "A790", "A791", "A792", "A793", "A794", "A795",
              "A796", "A797", "A798", "A799", "A800", "A801", "A802", "A803", "A804", "A805"],
-            ["B786", "B778", "B788", "B789", "B790", "B791", "B792", "B793", "B794", "B795",
+            ["B786", "B787", "B788", "B789", "B790", "B791", "B792", "B793", "B794", "B795",
              "B796", "B797", "B798", "B799", "B800", "B801", "B802", "B803", "B804", "B805"])
+
 
 # 二.从资产负债表和余额表中取数
 # 1.长期待摊费用
-J501 = ws_assets['D29'].value
-K501 = ws_assets['C29'].value
+J501 = ws_assets['C29'].value
+K501 = ws_assets['D29'].value
 mid_dic_second['J501'] = J501
 mid_dic_second['K501'] = K501
 
@@ -1015,14 +1084,14 @@ mid_dic_second['J643'] = J643
 mid_dic_second['K643'] = K643
 
 # 4.递延收益
-J692 = ws_assets['H24'].value
-K692 = ws_assets['G24'].value
+J692 = ws_assets['G24'].value
+K692 = ws_assets['H24'].value
 mid_dic_second['J692'] = J692
 mid_dic_second['K692'] = K692
 
 # 5.实收资本
-J716 = ws_assets['H30'].value
-K716 = ws_assets['G30'].value
+J716 = ws_assets['G30'].value
+K716 = ws_assets['H30'].value
 mid_dic_second['J716'] = J716
 mid_dic_second['K716'] = K716
 
@@ -1040,4 +1109,5 @@ for k, v in mid_dic_second.items():
 print("mid_dic_second:",mid_dic_second)
 
 
-wb_mid.save(r'D:\data\中间表\输出中间表8.xlsx')
+# wb_mid.save(r'D:\data\中间表\输出中间表8.xlsx')
+wb_mid.save(r"D:\data\test\科目余额表报表\1\输出中间表1.1.xlsx")

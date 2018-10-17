@@ -3,13 +3,10 @@ from balance_sheet.config1 import DIC_KEY
 import logging
 
 # file_path = "D:\data\输入家通.xlsx"
-
 # file_path = "D:\data\余额表2.xlsx"
-
-file_path = r"D:\data\余额表\输入\输入17.xlsx"
-
+# file_path = r"D:\data\余额表\输入\输入17.xlsx"
 # file_path = r"D:\test_data\输入2.xlsx"
-
+file_path = r"D:\data\test\科目余额表报表\4\科目余额表4.xlsx"
 
 wb = load_workbook(filename=file_path)
 
@@ -550,4 +547,6 @@ for i in range(1, row_num+1):
     # ws_out['Z' + str(num_dic)].value = dic
     num_dic += 1
 
-wb_out.save("D:\data\余额表\输出\输出17.xlsx")
+# wb_out.save("D:\data\余额表\输出\输出17.xlsx")
+
+wb_out.save(r"D:\data\test\科目余额表报表\4\输出余额表4.xlsx")

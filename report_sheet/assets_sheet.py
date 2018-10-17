@@ -1,10 +1,12 @@
 from openpyxl import load_workbook
 import logging
+import time
 
 # from report_sheet.assets_config import assets_dict
 
 # 资产负债表
-file_path_assets = r"D:\data\报表\报表输入\11\资产负债表11.xlsx"
+# file_path_assets = r"D:\data\报表\报表输入\11\资产负债表11.xlsx"
+file_path_assets = r"D:\data\test\科目余额表报表\4\资产负债表4.xlsx"
 
 wb_assets = load_workbook(filename=file_path_assets)
 
@@ -381,6 +383,8 @@ if C22_3 != 0:
     C22 = C22_3
 elif C22_3 == 0 and C22_5 != 0:
     C22 = C22_5
+elif C22_3 == 0 and C22_5 == 0:
+    C22 = C22_4
 else:
     C22 = C22_1
 
@@ -389,6 +393,8 @@ if D22_3 != 0:
     D22 = D22_3
 elif D22_3 == 0 and D22_5 != 0:
     D22 = D22_5
+elif D22_3 == 0 and D22_5 == 0:
+    D22 = D22_4
 else:
     D22 = D22_1
 
@@ -685,10 +691,8 @@ assets_dict['H38'] = H38
 # ### 取数结束 ####
 
 print("assets_dict:", assets_dict)
-
 # 填入报表中去
-file_path_report = r"D:\data\报表\报表输出\输出财务报表-打印2.xlsx"
-
+file_path_report = r"D:\data\报表\报表输出\输出报表1015-4.xlsx"
 wb_report = load_workbook(filename=file_path_report)
 
 sheets_report = wb_report.sheetnames
@@ -700,4 +704,7 @@ ws_report = wb_report[sheet_first_report]
 for k, v in assets_dict.items():
     ws_report[k] = v
 
-wb_report.save(r'D:\data\报表\报表输出\输出财务报表11.xlsx')
+time.sleep(3)
+
+# wb_report.save(r'D:\data\报表\报表输出\输出财务报表11.xlsx')
+wb_report.save(r"D:\data\test\科目余额表报表\4\输出报表4.3.xlsx")
