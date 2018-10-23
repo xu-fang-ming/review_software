@@ -27,10 +27,5 @@
 # print(d)
 
 
-a = " 地方教育费附加 "
-b = "教育费"
-
-c=a.strip()
-
-print(a)
-print(c)
+rate = 0.12
+print('%.f%%' % (rate * 100))

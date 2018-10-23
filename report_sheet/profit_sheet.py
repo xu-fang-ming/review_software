@@ -3,7 +3,7 @@ import logging
 # from report_sheet.profit_config import profit_dict
 
 # 损益表
-file_path_profit = r"D:\data\test\科目余额表报表\4\利润表4.xlsx"
+file_path_profit = r"D:\data\test\科目余额表报表\1\利润表1.xlsx"
 
 wb_profit = load_workbook(filename=file_path_profit)
 
@@ -323,7 +323,7 @@ print("profit_dict:", profit_dict)
 
 # file_path_report = r"D:\data\报表\报表输出\输出财务报表11.xlsx"
 
-file_path_report = r"D:\data\test\科目余额表报表\4\输出报表4.3.xlsx"
+file_path_report = r"D:\data\test\科目余额表报表\1\输出报表1.xlsx"
 
 wb_report = load_workbook(filename=file_path_report)
 
@@ -338,4 +338,4 @@ for k, v in profit_dict.items():
 
 # wb_report.save(r'D:\data\报表\报表输出\输出财务报表11.xlsx')
 
-wb_report.save(r"D:\data\test\科目余额表报表\4\输出报表4.3.xlsx")
+wb_report.save(r"D:\data\test\科目余额表报表\1\输出报表1.xlsx")

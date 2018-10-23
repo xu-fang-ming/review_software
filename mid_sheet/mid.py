@@ -1,10 +1,11 @@
 from openpyxl import load_workbook
 import logging
 import json
-
+from tkinter import filedialog
 # 第一次先余额表中取数
 # file_path_over = r"D:\data\余额表\输出\输出17.xlsx"
-file_path_over = r"D:\data\test\科目余额表报表\1\输出余额表1.xlsx"
+# file_path_over = r"D:\data\test\科目余额表报表\1\输出余额表1.xlsx"
+file_path_over = filedialog.askopenfilename(title='导入余额表', filetypes=[('All Files', '*')])
 wb_over = load_workbook(filename=file_path_over)
 sheets_over = wb_over.sheetnames
 sheet_first_over = sheets_over[0]
@@ -12,7 +13,8 @@ ws_over = wb_over[sheet_first_over]
 
 # 第二次从报表中取数
 # file_path_report = r"D:\data\报表\报表输出\输出财务报表11.xlsx"
-file_path_report = r"D:\data\test\科目余额表报表\1\输出报表1.xlsx"
+# file_path_report = r"D:\data\test\科目余额表报表\1\输出报表1.xlsx"
+file_path_report = filedialog.askopenfilename(title='导入报表', filetypes=[('All Files', '*')])
 wb_report = load_workbook(filename=file_path_report)
 sheets_report = wb_report.sheetnames
 sheet_first_report = sheets_report[0]  # 资产负债表
@@ -21,8 +23,8 @@ ws_assets = wb_report[sheet_first_report]  # 资产负债表工作区
 ws_profit = wb_report[sheet_second_report]  # 利润表工作区
 
 # 第三次填入中间表中去
-file_path_mid = r"D:\data\中间表\中间表.xlsx"
-wb_mid = load_workbook(filename=file_path_mid)
+# file_path_mid = r"D:\data\中间表\中间表.xlsx"
+wb_mid = load_workbook(filename="中间表.xlsx")
 sheets_mid = wb_mid.sheetnames
 sheet_first_mid = sheets_mid[0]  # 中间表1
 ws_mid = wb_mid[sheet_first_mid]  # 中间表工作区1
@@ -1110,4 +1112,6 @@ print("mid_dic_second:",mid_dic_second)
 
 
 # wb_mid.save(r'D:\data\中间表\输出中间表8.xlsx')
-wb_mid.save(r"D:\data\test\科目余额表报表\1\输出中间表1.1.xlsx")
+# wb_mid.save(r"D:\data\test\科目余额表报表\1\输出中间表1.1.xlsx")
+
+wb_mid.save(r"D:\work\2中间表.xlsx")

@@ -2,7 +2,8 @@ from openpyxl import load_workbook
 import logging
 
 # 第一步，先从报表中把数取出来
-file_path_report = r"D:\data\test\科目余额表报表\1\输出报表1.xlsx"
+# file_path_report = r"D:\data\test\科目余额表报表\1\输出报表1.xlsx"
+file_path_report = r"D:\work\3输出报表.xlsx"
 wb_report = load_workbook(filename=file_path_report)
 sheets_report = wb_report.sheetnames
 sheet_first_report = sheets_report[0]  # 资产负债表
@@ -12,11 +13,25 @@ ws_assets_table = wb_report[sheet_first_report]  # 资产负债表工作区
 ws_profit_table = wb_report[sheet_second_report]  # 利润表工作区
 ws_money_table = wb_report[sheet_three_report]  # 现金流量表工作区
 
+
+# 在从中间表中取数
+# file_path_mid = r"D:\data\test\科目余额表报表\1\输出中间表1.xlsx"
+file_path_mid = r"D:\work\2中间表.xlsx"
+wb_mid = load_workbook(filename=file_path_mid, data_only=True)
+sheets_mid = wb_mid.sheetnames
+# 中间附注表三
+sheet_three_mid = sheets_mid[2]
+ws_mid_three = wb_mid[sheet_three_mid]
+# 把报表的编制单位确定
+ws_assets_table["A2"] = "编制单位："+str(ws_mid_three["B2"].value)
 # 第二步，把数填入报备表中去
-file_path_tables = r"D:\data\报备表\报备信息表.xlsm"
-wb_tables = load_workbook(filename=file_path_tables)
+# file_path_tables = r"D:\data\报备表\(带链接)报备信息表.xlsm"
+wb_tables = load_workbook(filename="报备信息表.xlsm", keep_vba=True)
 sheets_tables = wb_tables.sheetnames
 print("111",wb_tables.sheetnames)
+# 基础资料表
+sheet_base = sheets_tables[0]
+ws_base = wb_tables[sheets_tables[0]]
 # 资产负债表
 sheet_assets = sheets_tables[4]
 ws_assets = wb_tables[sheet_assets]
@@ -26,7 +41,13 @@ ws_profit = wb_tables[sheet_profit]
 # 现金流量表
 sheet_money = sheets_tables[6]
 ws_money = wb_tables[sheet_money]
-
+# 基础资料填写材料开始
+ws_base["B3"] = ws_mid_three["B2"].value
+ws_base["B6"] = ws_mid_three["B8"].value
+ws_base["D3"] = ws_mid_three["B2"].value
+ws_base["D7"] = ws_mid_three["B9"].value
+ws_base["D8"] = ws_mid_three["B14"].value
+ws_base["D10"] = ws_mid_three["B3"].value
 
 # ### 报备资产负债表开始######
 # 1.货币资金
@@ -302,4 +323,5 @@ ws_money["G31"] = ws_money_table["D5"].value
 
 # #### 报备现金流量表结束#####
 
-wb_tables.save(r"D:\data\test\科目余额表报表\1\输出报备表1.xlsx")
+wb_tables.save(r"D:\work\5输出报备.xlsm")
+wb_report.save(r"D:\work\3输出报表.xlsx")

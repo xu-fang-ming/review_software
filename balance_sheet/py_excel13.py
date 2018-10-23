@@ -1,13 +1,14 @@
 from openpyxl import load_workbook
 from balance_sheet.config1 import DIC_KEY
 import logging
-
+from tkinter import filedialog
+r = filedialog.askopenfilename(title='导入余额表', filetypes=[('Python', '*.py *.pyw'), ('All Files', '*')])
 # file_path = "D:\data\输入家通.xlsx"
 # file_path = "D:\data\余额表2.xlsx"
 # file_path = r"D:\data\余额表\输入\输入17.xlsx"
 # file_path = r"D:\test_data\输入2.xlsx"
-file_path = r"D:\data\test\科目余额表报表\4\科目余额表4.xlsx"
-
+# file_path = r"D:\data\test\科目余额表报表\4\科目余额表4.xlsx"
+file_path = r
 wb = load_workbook(filename=file_path)
 
 sheets = wb.sheetnames
@@ -391,9 +392,9 @@ month_num, month_index = find_month()
 
 # 八.按照一定的顺序对生成的数据排好序，写入到一个新的表格中去
 
-file_path_out = "D:\data\标准余额表.xlsx"
+# file_path_out = "D:\data\标准余额表.xlsx"
 
-wb_out = load_workbook(filename=file_path_out)
+wb_out = load_workbook(filename="标准余额表.xlsx")
 
 sheets_out = wb_out.sheetnames
 
@@ -549,4 +550,5 @@ for i in range(1, row_num+1):
 
 # wb_out.save("D:\data\余额表\输出\输出17.xlsx")
 
-wb_out.save(r"D:\data\test\科目余额表报表\4\输出余额表4.xlsx")
+# wb_out.save(r"D:\data\test\科目余额表报表\1\输出余额表1.1.xlsx")
+wb_out.save(r"D:\work\1系统科目余额表.xlsx")

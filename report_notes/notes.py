@@ -4,11 +4,12 @@ import re
 from docx.shared import Pt
 
 # 获取文档对象
-file_path_notes = r"D:\data\附注\输出正文修改.docx"
-file_notes = docx.Document(file_path_notes)
+file_path_notes = r"D:\data\附注\输出正文1018.docx"
+file_notes = docx.Document("输出正文.docx")
 
 # 第二次找到中间表
-file_path_mid = r"D:\data\test\科目余额表报表\4\输出中间表4.xlsx"
+# file_path_mid = r"D:\data\test\科目余额表报表\1\输出中间表1.xlsx"
+file_path_mid = r"D:\work\2中间表.xlsx"
 wb_mid = load_workbook(filename=file_path_mid, data_only=True)
 sheets_mid = wb_mid.sheetnames
 sheet_first_mid = sheets_mid[0]  # 中间表1
@@ -19,8 +20,71 @@ sheet_second_mid = sheets_mid[1]
 ws_mid_second = wb_mid[sheet_second_mid]
 # print("B806:", "%.2f" % ws_mid_second["B806"].value)
 
+# 中间附注表三
+sheet_three_mid = sheets_mid[2]
+ws_mid_three = wb_mid[sheet_three_mid]
+
+# ######构建一个需要替换的字典#######
+num = 2
+replace_dict = {}
+for i in ws_mid_three["A"][1:]:
+    key = str(i.value)
+    replace_dict[key] = str(ws_mid_three["B"+str(num)].value)
+    num += 1
+# print("replace_dict:",replace_dict)
+# ##########################附注替换开始############################
+# 替换段落中的文字
+for para in file_notes.paragraphs:
+    for k in replace_dict:
+        if k in para.text:
+            para.text = para.text.replace(k, replace_dict[k])
+# num_par=0
+# for para in file_notes.paragraphs:
+#
+#     print(num_par, para.text)
+#     print("***************")
+#     num_par += 1
+# company_name = str(ws_mid_three["B2"].value)
+# audit_year = str(ws_mid_three["B3"].value)
+par6 = file_notes.paragraphs[6].text
+par8 = file_notes.paragraphs[8].text
+par57 = file_notes.paragraphs[57].text
+file_notes.paragraphs[6].text = ""
+file_notes.paragraphs[8].text = ""
+file_notes.paragraphs[57].text = ""
+
+run6 = file_notes.paragraphs[6].add_run(par6)
+run6.font.name = '宋体'
+run6.font.size = Pt(16)
+run6.font.bold = True
+
+run8 = file_notes.paragraphs[8].add_run(par8)
+run8.font.name = '宋体'
+run8.font.size = Pt(16)
+run8.font.bold = True
+
+run57 = file_notes.paragraphs[57].add_run(par6)
+run57.font.name = '黑体'
+run57.font.size = Pt(16)
+run57.font.bold = True
+
+# 替换表格中的文字
+# print(111,file_notes.tables[1].cell(5,2).text)
+zzs = ws_mid_three["B12"].value
+zzs = '%.f%%' % (zzs * 100)
+sds = ws_mid_three["B13"].value
+sds = '%.f%%' % (sds * 100)
+# file_notes.tables[1].cell(1,2).text = zzs
+# file_notes.tables[1].cell(5,2).text = sds
+run1 = file_notes.tables[1].cell(1, 2).paragraphs[0].add_run(zzs)
+run1.font.name = 'Arial Narrow'
+run1.font.size = Pt(9)
+run2 = file_notes.tables[1].cell(5, 2).paragraphs[0].add_run(sds)
+run2.font.name = 'Arial Narrow'
+run2.font.size = Pt(9)
 
 # ######################开始往附注中填数###########################
+
 
 def standard_num(x):
     """
@@ -863,4 +927,5 @@ fill_first_table_two2(66, 1, 6, 0, 7, 1, ["A1849", "A1850", "A1851", "A1852", "A
 fill_first_table_one(67, 1, 4, 1, ["C1879", "C1880", "C1882"])
 
 
-file_notes.save(r"D:\data\test\科目余额表报表\4\附注4.docx")
+# file_notes.save(r"D:\data\test\科目余额表报表\1\附注1.10.docx")
+file_notes.save(r"D:\work\4输出附注.xlsx")
